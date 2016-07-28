@@ -19,4 +19,9 @@ class test
 
     public function get(){
         return array('message'=>'success');
-    }}
+    }
+
+    public function param($params){
+        return $params;
+    }
+}

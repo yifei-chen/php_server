@@ -12,13 +12,17 @@ require_once 'lib/App.php';
 
 require_once 'router/test.php';
 
-$route = Router::getInstance();
+require_once 'lib/Server.php';
 
-$app = App::getInstance();
+     $route = Router::getInstance();
+     $app = App::getInstance();
 
-$route->get('/',test::getInstance(),'get')
-        ->get('/test',test::getInstance(),'get');
+$test = test::getInstance();
 
-$app->setRoute($route);
+    $route->get('/',$test,'get');
+    $route->get('/test',$test,'get');
+    $route->get('/test/:id',$test,'param');
 
-$app->run();
+    $app->setRoute($route);
+
+$server = new Server("localhost", 8070,$app);

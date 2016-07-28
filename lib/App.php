@@ -21,10 +21,11 @@ class App
         return self::$_instance;
     }
 
-    public function run(){
+    public function run($method,$route){
         if($this->router){
-            $this->router->run();
+            return $this->router->run($method,$route);
         }
+        return null;
     }
 
     /**

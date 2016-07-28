@@ -29,6 +29,7 @@ class Router
 
     private function uriToArray($uri){
         $array = explode("/",$uri);
+        array_shift($array);
         return $array;
     }
 
@@ -44,8 +45,8 @@ class Router
 
 
 
-    public function run(){
-        switch($_SERVER['REQUEST_METHOD']){
+    public function run($method,$route){
+        switch($method){
             case 'GET':
                 $this->executeArray = $this->get;
                 break;
@@ -56,24 +57,28 @@ class Router
                 $this->executeArray = $this->get;
                 break;
         }
-        $uri = $_SERVER['REQUEST_URI'];
+        $uri = $route;
         if(!$uri){
-            exit('bad request');
+            return 'bad request';
         }
+        $params = array();
         $uriArray = $this->uriToArray($uri);
-        $func = $this->executeArray[$uri];
-        $res = $func?call_user_func_array($func, array()):null;
+        $routes = array_keys($this->executeArray);
+        $matchRoute = $this->getRoute($routes,$uriArray,$params);
+        $func = $this->executeArray[$matchRoute];
+        $res = $func?call_user_func_array($func, array($params)):null;
         if(!$res){
-            exit('route not defined');
+            return 'route not defined';
         }
         $result = null;
         if(is_array($res)){
             $result = json_encode($res);
         }
-        exit($result);
+        return $result;
     }
 
-    private function getRoute($routes,$uriArray){
+    private function getRoute($routes,$uriArray,&$params){
+        $pattern = '/^:/';
         foreach($routes as $route){
             $routeArray = $this->uriToArray($route);
             $matchFlag = true;
@@ -81,8 +86,14 @@ class Router
                 continue;
             }
             for($i=0; $i<count($uriArray); $i++){
+                if(preg_match($pattern,$routeArray[$i])){
+                    $param = explode(':',$routeArray[$i])[1];
+                    $params[$param] = $uriArray[$i];
+                    continue;
+                }
                 if($routeArray[$i]!=$uriArray[$i]){
                     $matchFlag = false;
+                    $params = array();
                     break;
                 }
             }
