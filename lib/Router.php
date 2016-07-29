@@ -7,6 +7,8 @@
  * Time: 下午8:25
  */
 
+require_once 'model/Request.php';
+
 class Router
 {
     private static $_instance = null;
@@ -43,9 +45,25 @@ class Router
         return $this;
     }
 
+    private function queryString2Array($string){
+        if($string==""){
+            return array();
+        }
+        $queryArray = array();
+        $keyValues = explode("&",$string);
+        foreach ($keyValues as $query){
+            $queryPair = explode("=",$query);
+            $queryArray[$queryPair[0]]=count($queryPair)>1?$queryPair[1]:"";
+        }
+        return $queryArray;
+    }
 
-
-    public function run($method,$route){
+    public function run($method,$unionRoute){
+        echo 'request received : '.$unionRoute.' method : '.$method."\n";
+        $unionRouteArray = explode("?",$unionRoute);
+        $route = $unionRouteArray[0];
+        $query = count($unionRouteArray)>1?$unionRouteArray[1]:"";
+        $queryArray = $this->queryString2Array($query);
         switch($method){
             case 'GET':
                 $this->executeArray = $this->get;
@@ -66,7 +84,7 @@ class Router
         $routes = array_keys($this->executeArray);
         $matchRoute = $this->getRoute($routes,$uriArray,$params);
         $func = $this->executeArray[$matchRoute];
-        $res = $func?call_user_func_array($func, array($params)):null;
+        $res = $func?call_user_func_array($func, array(new Request($params,$queryArray))):null;
         if(!$res){
             return 'route not defined';
         }

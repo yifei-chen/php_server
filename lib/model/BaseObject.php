@@ -4,11 +4,9 @@
  * Created by PhpStorm.
  * User: CYF
  * Date: 16/7/27
- * Time: 下午9:09
+ * Time: 下午10:03
  */
-require '../lib/model/Request.php';
-
-class test
+class BaseObject
 {
     private static $_instance = null;
 
@@ -19,11 +17,4 @@ class test
         return self::$_instance;
     }
 
-    public function get(){
-        return array('message'=>'success');
-    }
-
-    public function param($res){
-        return array($res->getParams(),$res->getQuery());
-    }
 }
