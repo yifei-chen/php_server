@@ -6,18 +6,18 @@
  * Time: 下午8:24
  */
 
-require_once 'lib/Router.php';
+require_once '../lib/Router.php';
 
-require_once 'lib/App.php';
+require_once '../lib/App.php';
 
-require_once 'router/test.php';
+require_once '../router/test.php';
 
-require_once 'lib/Server.php';
+require_once '../lib/Server.php';
 
      $route = Router::getInstance();
      $app = App::getInstance();
 
-$test = test::getInstance();
+    $test = test::getInstance();
 
     $route->get('/',$test,'get');
     $route->get('/test',$test,'get');

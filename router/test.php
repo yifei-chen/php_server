@@ -6,7 +6,7 @@
  * Date: 16/7/27
  * Time: 下午9:09
  */
-require '../lib/model/Request.php';
+require_once '../lib/model/Request.php';
 
 class test
 {
@@ -23,7 +23,7 @@ class test
         return array('message'=>'success');
     }
 
-    public function param($res){
+    public function param(Request $res){
         return array($res->getParams(),$res->getQuery());
     }
 }
